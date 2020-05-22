@@ -6,5 +6,5 @@ use std::ops::Add;
 mod anki_reader;
 
 fn main() {
-    anki_reader::read();
+    anki_reader::make_anki_card_csv_from_markdown();
 }

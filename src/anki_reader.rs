@@ -16,33 +16,31 @@ enum AnkiCardType {
     Cloze,
 }
 
-pub fn read() {
-    let filename: &'static str = "./tests/sample_anki.md";
+pub fn make_anki_card_csv_from_markdown() {
+    let raw_markdown: String = read_markdown("./tests/sample_anki.md");
 
-    let raw_string: String =
-        fs::read_to_string(filename).expect("Something went wrong reading the file");
-
-    let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_string);
+    let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown);
 
     for card in anki_cards {
         println!("{:?}", card)
     }
 
-    //let output_filepath: String = "../anki_output.csv"
-    //make_output_csv(anki_cards, output_filepath);
+    //make_output_csv(anki_cards, "../anki_output.csv");
 }
 
-fn make_anki_cards(raw_string: String) -> Vec<AnkiCard> {
-    // Makes a list of AnkiCardRaw based on
-    // input markdown file
+fn read_markdown(filepath: &'static str) -> String {
+    fs::read_to_string(filepath).expect("Something went wrong reading the file")
+}
+
+fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
     let mut anki_cards: Vec<AnkiCard> = Vec::new();
 
     let mut temp_front: String = "".to_string();
     let mut temp_back: String = "".to_string();
 
-    for line in raw_string.split("\n") {
-        // By convention card front is one line and
-        // starts with ##. E.g. ## [Rust, udemy]
+    for line in raw_markdown.split("\n") {
+        // Card front is one line and starts
+        // with ##. E.g. ## [Rust, udemy]
         if line.starts_with("## ") {
             if !temp_front.is_empty() {
                 anki_cards.push(AnkiCard {
@@ -57,7 +55,7 @@ fn make_anki_cards(raw_string: String) -> Vec<AnkiCard> {
             temp_front = line.to_string();
             temp_back = "".to_string();
 
-        // All lines between ##'s belong by convention
+        // All lines between ##'s belong
         // to the back side of a card
         } else {
             temp_back = temp_back + line + "\n";
