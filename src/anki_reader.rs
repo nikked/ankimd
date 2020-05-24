@@ -59,6 +59,16 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
         }
     }
 
+    // Add last card after exited loop
+    if !temp_back.is_empty() {
+        anki_cards.push(AnkiCard {
+            front: process_front(&temp_front),
+            back: process_back(&temp_back),
+            tags: find_tags(&temp_front),
+            card_type: determine_card_type(&temp_front),
+        })
+    }
+
     anki_cards
 }
 
@@ -88,6 +98,9 @@ fn make_output_csv(anki_cards: &Vec<AnkiCard>, filepath: &'static str) {
     // print all tags
 
     for card in anki_cards {
-        println!("{:?}", card)
+        println!("Front:\n{:?}\n", card.front);
+        println!("Back:\n{:?}\n", card.back);
+        println!("Tags: {:?}\n", card.tags);
+        println!("Type: {:?}", card.card_type);
     }
 }
