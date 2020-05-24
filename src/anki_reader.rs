@@ -51,6 +51,9 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
 
             temp_front = line.to_string();
             temp_back = "".to_string();
+        } else if line.starts_with("---") {
+            temp_front = temp_front + &temp_back;
+            temp_back = "".to_string();
 
         // All lines between ##'s belong
         // to the back side of a card

@@ -9,7 +9,7 @@ fn main() {
 
 ---
 
-Text outside bullets
+Here starts card back
 * Will throw missing lifetime specifier since Person might outlive name
 * Fix with lifetime specifier
 * third bullet
