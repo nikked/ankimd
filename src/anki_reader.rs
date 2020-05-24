@@ -46,8 +46,8 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
                 anki_cards.push(AnkiCard {
                     front: process_front(&temp_front),
                     back: process_back(&temp_back),
-                    tags: find_tags(&temp_front),
                     card_type: determine_card_type(&temp_front),
+                    tags: find_tags(&temp_front),
                 });
             }
 
@@ -69,27 +69,36 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
         anki_cards.push(AnkiCard {
             front: process_front(&temp_front),
             back: process_back(&temp_back),
-            tags: find_tags(&temp_front),
             card_type: determine_card_type(&temp_front),
+            tags: find_tags(&temp_front),
         })
     }
 
     anki_cards
 }
 
+fn process_front(front: &String) -> String {
+    // TODO: Add markdown to HTML with codeblocks
+    front[3..].to_string() // Remove the prefix "## "
+}
+
+fn process_back(back: &String) -> String {
+    // TODO: Add markdown to HTML with codeblocks
+    back.clone()
+}
+
 fn determine_card_type(front: &String) -> AnkiCardType {
-    // Card type determined with special tag: BAS, REV, CLOZE
+    // TODO: Return first match in TAGS array for BAS, REV, CLO
     AnkiCardType::Basic
 }
 
-fn process_front(front: &String) -> String {
-    // Remove the prefix "## "
-    front[3..].to_string()
-}
-
 fn find_tags(front: &String) -> Vec<String> {
+    // TODO: Add CLI arg for anki-rust tag
+    // figure out why matched_string can be reassigned
+    // add type defs
+
     // Treat all term in first [] as a tag literal
-    // Do NOT add special card type tags: BAS, REV, CLOZE
+    // Do NOT add special card type tags: BAS, REV, CLO
     let re = Regex::new(r"\[.*\]").unwrap();
 
     let matched_string: String = re
@@ -98,23 +107,17 @@ fn find_tags(front: &String) -> Vec<String> {
         .get(0)
         .map_or("".to_string(), |m| m.as_str().to_string());
 
-    // TODO: clarify this String str situation. Why is it allowed below to
-    // declare matched_string twice? What is the type of it?
-
     let matched_string = &matched_string[1..matched_string.len() - 1];
 
     let mut tag_vector: Vec<String> = Vec::new();
+
+    tag_vector.push("anki-rust".to_string());
 
     for tag in matched_string.split(", ") {
         tag_vector.push(tag.to_string());
     }
 
     tag_vector
-}
-
-fn process_back(back: &String) -> String {
-    // Markdown to HTML
-    back.clone()
 }
 
 fn make_output_csv(anki_cards: &Vec<AnkiCard>, filepath: &'static str) {
