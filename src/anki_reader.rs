@@ -3,6 +3,8 @@
 use std::env;
 use std::fs;
 
+use regex::Regex;
+
 #[derive(Debug)]
 struct AnkiCard {
     front: String,
@@ -81,14 +83,33 @@ fn determine_card_type(front: &String) -> AnkiCardType {
 }
 
 fn process_front(front: &String) -> String {
-    // Remove the prefix "## " and other cleaning
-    front.clone()
+    // Remove the prefix "## "
+    front[3..].to_string()
 }
 
 fn find_tags(front: &String) -> Vec<String> {
     // Treat all term in first [] as a tag literal
     // Do NOT add special card type tags: BAS, REV, CLOZE
-    Vec::new()
+    let re = Regex::new(r"\[.*\]").unwrap();
+
+    let matched_string: String = re
+        .captures(&process_front(front))
+        .unwrap()
+        .get(0)
+        .map_or("".to_string(), |m| m.as_str().to_string());
+
+    // TODO: clarify this String str situation. Why is it allowed below to
+    // declare matched_string twice? What is the type of it?
+
+    let matched_string = &matched_string[1..matched_string.len() - 1];
+
+    let mut tag_vector: Vec<String> = Vec::new();
+
+    for tag in matched_string.split(", ") {
+        tag_vector.push(tag.to_string());
+    }
+
+    tag_vector
 }
 
 fn process_back(back: &String) -> String {
