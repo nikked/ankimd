@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+
 use std::env;
 use std::fs;
 
@@ -21,11 +23,7 @@ pub fn make_anki_card_csv_from_markdown() {
 
     let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown);
 
-    for card in anki_cards {
-        println!("{:?}", card)
-    }
-
-    //make_output_csv(anki_cards, "../anki_output.csv");
+    make_output_csv(&anki_cards, "../anki_output.csv");
 }
 
 fn read_markdown(filepath: &'static str) -> String {
@@ -44,11 +42,10 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
         if line.starts_with("## ") {
             if !temp_front.is_empty() {
                 anki_cards.push(AnkiCard {
-                    front: process_front(temp_front), // remove ##
-                    back: process_back(temp_back),
-                    //tags: find_tags(&front[..]),
-                    tags: Vec::new(),
-                    card_type: AnkiCardType::Basic,
+                    front: process_front(&temp_front),
+                    back: process_back(&temp_back),
+                    tags: find_tags(&temp_front),
+                    card_type: determine_card_type(&temp_front),
                 });
             }
 
@@ -65,28 +62,32 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
     anki_cards
 }
 
-fn determine_card_type(front: String) -> AnkiCardType {
+fn determine_card_type(front: &String) -> AnkiCardType {
     // Card type determined with special tag: BAS, REV, CLOZE
     AnkiCardType::Basic
 }
 
-fn process_front(front: String) -> String {
+fn process_front(front: &String) -> String {
     // Remove the prefix "## " and other cleaning
-    front
+    front.clone()
 }
 
-fn find_tags(front: String) -> Vec<String> {
+fn find_tags(front: &String) -> Vec<String> {
     // Treat all term in first [] as a tag literal
     // Do NOT add special card type tags: BAS, REV, CLOZE
     Vec::new()
 }
 
-fn process_back(back: String) -> String {
+fn process_back(back: &String) -> String {
     // Markdown to HTML
-    back
+    back.clone()
 }
 
-fn make_output_csv(anki_cards: Vec<AnkiCard>, filepath: String) {
+fn make_output_csv(anki_cards: &Vec<AnkiCard>, filepath: &'static str) {
     // ask for confirmation
     // print all tags
+
+    for card in anki_cards {
+        println!("{:?}", card)
+    }
 }
