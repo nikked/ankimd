@@ -47,7 +47,7 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
                     front: process_front(&temp_front),
                     back: process_back(&temp_back),
                     card_type: determine_card_type(&temp_front),
-                    tags: find_tags(&temp_front),
+                    tags: find_tags(&temp_front, false),
                 });
             }
 
@@ -70,7 +70,7 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
             front: process_front(&temp_front),
             back: process_back(&temp_back),
             card_type: determine_card_type(&temp_front),
-            tags: find_tags(&temp_front),
+            tags: find_tags(&temp_front, false),
         })
     }
 
@@ -79,6 +79,7 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
 
 fn process_front(front: &String) -> String {
     // TODO: Add markdown to HTML with codeblocks
+    // replace tags with find_tags value to remove BAS, REV, CLO
     front[3..].to_string() // Remove the prefix "## "
 }
 
@@ -88,11 +89,18 @@ fn process_back(back: &String) -> String {
 }
 
 fn determine_card_type(front: &String) -> AnkiCardType {
-    // TODO: Return first match in TAGS array for BAS, REV, CLO
+    for tag in find_tags(front, true) {
+        if "REV" == tag {
+            return AnkiCardType::BasicWithReverse;
+        } else if "CLO" == tag {
+            return AnkiCardType::Cloze;
+        }
+    }
+
     AnkiCardType::Basic
 }
 
-fn find_tags(front: &String) -> Vec<String> {
+fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
     // TODO: Add CLI arg for anki-rust tag
     // figure out why matched_string can be reassigned
     // add type defs
@@ -114,6 +122,11 @@ fn find_tags(front: &String) -> Vec<String> {
     tag_vector.push("anki-rust".to_string());
 
     for tag in matched_string.split(", ") {
+        let card_type_tags = vec!["BAS", "REV", "CLO"];
+
+        if card_type_tags.contains(&tag) && !keep_card_type_tags {
+            continue;
+        }
         tag_vector.push(tag.to_string());
     }
 
