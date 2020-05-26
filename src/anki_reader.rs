@@ -1,9 +1,14 @@
 #![allow(unused_variables)]
+#![allow(unused_must_use)]
 
 use std::env;
 use std::fs;
 
 use regex::Regex;
+
+use csv::Writer;
+
+use std::error::Error;
 
 #[derive(Debug)]
 struct AnkiCard {
@@ -25,7 +30,7 @@ pub fn make_anki_card_csv_from_markdown() {
 
     let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown);
 
-    make_output_csv(&anki_cards, "../anki_output.csv");
+    make_output_csv(&anki_cards, "anki_output.csv", true);
 }
 
 fn read_markdown(filepath: &'static str) -> String {
@@ -133,14 +138,34 @@ fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
     tag_vector
 }
 
-fn make_output_csv(anki_cards: &Vec<AnkiCard>, filepath: &'static str) {
+fn make_output_csv(
+    anki_cards: &Vec<AnkiCard>,
+    filepath: &'static str,
+    verbose: bool,
+) -> Result<(), Box<dyn Error>> {
+    // TODO
     // ask for confirmation
     // print all tags
 
+    let mut wtr = Writer::from_path(filepath)?;
+
     for card in anki_cards {
-        println!("Front:\n{:?}\n", card.front);
-        println!("Back:\n{:?}\n", card.back);
-        println!("Tags: {:?}\n", card.tags);
-        println!("Type: {:?}", card.card_type);
+        if verbose {
+            println!("Front:\n{:?}\n", card.front);
+            println!("Back:\n{:?}\n", card.back);
+            println!("Tags: {:?}\n", card.tags);
+            println!("Type: {:?}", card.card_type);
+        }
+        wtr.write_record(&[
+            &card.front,
+            &card.back,
+            &format!("{:?}", card.tags),
+            &format!("{:?}", card.card_type),
+        ])?;
     }
+
+    wtr.flush()?;
+
+    println!("Wrote {} cards to filepath {}", anki_cards.len(), filepath);
+    Ok(())
 }
