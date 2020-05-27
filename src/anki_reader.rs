@@ -10,6 +10,8 @@ use csv::Writer;
 
 use std::error::Error;
 
+use comrak::{markdown_to_html, ComrakOptions};
+
 #[derive(Debug)]
 struct AnkiCard {
     front: String,
@@ -83,14 +85,18 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
 }
 
 fn process_front(front: &String) -> String {
-    // TODO: Add markdown to HTML with codeblocks
+    // TODO: 
     // replace tags with find_tags value to remove BAS, REV, CLO
-    front[3..].to_string() // Remove the prefix "## "
-}
+
+    convert_markdown_to_html(&front[3..].to_string())
 
 fn process_back(back: &String) -> String {
     // TODO: Add markdown to HTML with codeblocks
-    back.clone()
+    convert_markdown_to_html(back)
+}
+
+fn convert_markdown_to_html(input_markdown: &String) -> String {
+    markdown_to_html(&input_markdown, &ComrakOptions::default())
 }
 
 fn determine_card_type(front: &String) -> AnkiCardType {
