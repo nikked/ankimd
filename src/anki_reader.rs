@@ -85,10 +85,11 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
 }
 
 fn process_front(front: &String) -> String {
-    // TODO: 
+    // TODO:
     // replace tags with find_tags value to remove BAS, REV, CLO
 
     convert_markdown_to_html(&front[3..].to_string())
+}
 
 fn process_back(back: &String) -> String {
     // TODO: Add markdown to HTML with codeblocks
@@ -165,7 +166,7 @@ fn make_output_csv(
         wtr.write_record(&[
             &card.front,
             &card.back,
-            &format!("{:?}", card.tags),
+            &card.tags.join(" "),
             &format!("{:?}", card.card_type),
         ])?;
     }
