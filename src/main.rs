@@ -1,9 +1,5 @@
-#![allow(dead_code)]
-#![allow(unused_imports)]
-#![allow(unused_variables)]
 #![allow(unused_must_use)]
 
-use std::env;
 use std::fs;
 
 use clap::Clap;
@@ -12,7 +8,6 @@ use csv::Writer;
 use regex::Regex;
 use std::error::Error;
 
-#[derive(Debug)]
 struct AnkiCard {
     front: String,
     back: String,
@@ -31,22 +26,16 @@ enum AnkiCardType {
 #[clap(version = "1.0", author = "Niko Linnansalo <nikked@protonmail.com>")]
 struct Opts {
     #[clap(short, long, default_value = "./tests/sample_anki.md")]
-    input: String,
+    input_file: String,
     #[clap(short, long, default_value = "anki_output.csv")]
-    output: String,
+    output_file: String,
 }
 
 pub fn main() {
     let opts: Opts = Opts::parse();
-
-    let input_file = String::new() + &opts.input;
-    let output_file = opts.output;
-
-    let raw_markdown: String = read_markdown(input_file);
-
+    let raw_markdown: String = read_markdown(opts.input_file);
     let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown);
-
-    make_output_csv(&anki_cards, output_file, true);
+    make_output_csv(&anki_cards, opts.output_file, true);
 }
 
 fn read_markdown(filepath: String) -> String {
@@ -106,12 +95,17 @@ fn process_front(front: &String) -> String {
 }
 
 fn process_back(back: &String) -> String {
-    // TODO: Add markdown to HTML with codeblocks
     convert_markdown_to_html(back)
 }
 
 fn convert_markdown_to_html(input_markdown: &String) -> String {
-    markdown_to_html(&input_markdown, &ComrakOptions::default())
+    let mut html_string: String = markdown_to_html(&input_markdown, &ComrakOptions::default());
+
+    html_string = str::replace(&html_string, "<pre", "<pre align=left ");
+    html_string = str::replace(&html_string, "<ul", "<ul align=left ");
+    html_string = str::replace(&html_string, "<ol", "<ol align=left ");
+
+    html_string
 }
 
 fn determine_card_type(front: &String) -> AnkiCardType {
