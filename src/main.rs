@@ -6,15 +6,11 @@
 use std::env;
 use std::fs;
 
-use regex::Regex;
-
-use csv::Writer;
-
-use std::error::Error;
-
-use comrak::{markdown_to_html, ComrakOptions};
-
 use clap::Clap;
+use comrak::{markdown_to_html, ComrakOptions};
+use csv::Writer;
+use regex::Regex;
+use std::error::Error;
 
 #[derive(Debug)]
 struct AnkiCard {
@@ -32,7 +28,7 @@ enum AnkiCardType {
 }
 
 #[derive(Clap)]
-#[clap(version = "1.0", author = "Kevin K. <kbknapp@gmail.com>")]
+#[clap(version = "1.0", author = "Niko Linnansalo <nikked@protonmail.com>")]
 struct Opts {
     #[clap(short, long, default_value = "./tests/sample_anki.md")]
     input: String,
@@ -43,17 +39,17 @@ struct Opts {
 pub fn main() {
     let opts: Opts = Opts::parse();
 
-    let input_file = opts.input;
+    let input_file = String::new() + &opts.input;
     let output_file = opts.output;
 
-    let raw_markdown: String = read_markdown(&input_file);
+    let raw_markdown: String = read_markdown(input_file);
 
     let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown);
 
-    make_output_csv(&anki_cards, &output_file, true);
+    make_output_csv(&anki_cards, output_file, true);
 }
 
-fn read_markdown(filepath: &'static str) -> String {
+fn read_markdown(filepath: String) -> String {
     fs::read_to_string(filepath).expect("Something went wrong reading the file")
 }
 
@@ -165,14 +161,14 @@ fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
 
 fn make_output_csv(
     anki_cards: &Vec<AnkiCard>,
-    filepath: &'static str,
+    filepath: String,
     verbose: bool,
 ) -> Result<(), Box<dyn Error>> {
     // TODO
     // ask for confirmation
     // print all tags
 
-    let mut wtr = Writer::from_path(filepath)?;
+    let mut wtr = Writer::from_path(filepath.clone())?;
 
     for card in anki_cards {
         if verbose {
