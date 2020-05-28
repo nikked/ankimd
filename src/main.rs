@@ -23,9 +23,9 @@ enum AnkiCardType {
 }
 
 #[derive(Clap)]
-#[clap(version = "1.0", author = "Niko Linnansalo <nikked@protonmail.com>")]
+#[clap(version = "0.1.0", author = "Niko Linnansalo <niko@linnansalo.com>")]
 struct Opts {
-    #[clap(short, long, default_value = "./tests/sample_anki.md")]
+    #[clap(short, long, default_value = "anki.md")]
     input_file: String,
     #[clap(short, long, default_value = "anki_output.csv")]
     output_file: String,
@@ -88,9 +88,6 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
 }
 
 fn process_front(front: &String) -> String {
-    // TODO:
-    // replace tags with find_tags value to remove BAS, REV, CLO
-
     convert_markdown_to_html(&front[3..].to_string())
 }
 
@@ -121,12 +118,8 @@ fn determine_card_type(front: &String) -> AnkiCardType {
 }
 
 fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
-    // TODO: Add CLI arg for anki-rust tag
-    // figure out why matched_string can be reassigned
-    // add type defs
-
-    // Treat all term in first [] as a tag literal
-    // Do NOT add special card type tags: BAS, REV, CLO
+    // Treat all terms in first [] as a tag literal
+    // E.g.: [Rust, udemy]
     let re = Regex::new(r"\[.*\]").unwrap();
 
     let matched_string: String = re
@@ -158,10 +151,6 @@ fn make_output_csv(
     filepath: String,
     verbose: bool,
 ) -> Result<(), Box<dyn Error>> {
-    // TODO
-    // ask for confirmation
-    // print all tags
-
     let mut wtr = Writer::from_path(filepath.clone())?;
 
     for card in anki_cards {

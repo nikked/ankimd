@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "anki_rust"
+name = "ankimd"
 version = "0.1.0"
 dependencies = [
  "clap 3.0.0-beta.1 (registry+https://github.com/rust-lang/crates.io-index)",
