@@ -1,6 +1,6 @@
 # ankimd: Opinionated Anki-card maker
 
-> Write Anki cards in Markdown and import to Anki
+> Write Anki cards in Markdown and import to Anki as csv file
 
 Everyday I write notes to a file called anki.md and convert this markdown to Anki cards. This is achieving by first converting the anki.md to html and then making a Anki importable csv.
 
