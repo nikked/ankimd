@@ -1,4 +1,4 @@
-# ankimd: an opinionated .md to CSV parser
+# ankimd: Opinionated Anki-card maker
 
 > Write Anki cards in Markdown and import to Anki
 
