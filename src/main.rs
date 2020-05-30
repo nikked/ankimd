@@ -151,10 +151,10 @@ fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
 
 fn make_output_csv(
     anki_cards: &Vec<AnkiCard>,
-    filepath: String,
+    output_filepath: String,
     verbose: bool,
 ) -> Result<(), Box<dyn Error>> {
-    let mut _filepath = filepath.clone();
+    let mut _filepath = output_filepath.clone();
 
     if _filepath == DEFAULT_OUT_FILEPATH {
         let _outputdir = Utc::now().format("csv_outputs/%Y-%m-%d_%H/").to_string();
@@ -164,6 +164,8 @@ fn make_output_csv(
 
     let mut wtr = Writer::from_path(_filepath.clone())?;
 
+    let mut all_tags = Vec::new();
+
     for card in anki_cards {
         if verbose {
             println!("Front:\n{:?}\n", card.front);
@@ -171,6 +173,8 @@ fn make_output_csv(
             println!("Tags: {:?}\n", card.tags);
             println!("Type: {:?}", card.card_type);
         }
+
+        all_tags.extend(card.tags.iter().cloned());
         wtr.write_record(&[
             &card.front,
             &card.back,
@@ -181,6 +185,11 @@ fn make_output_csv(
 
     wtr.flush()?;
 
-    println!("Wrote {} cards to filepath {}", anki_cards.len(), _filepath);
+    println!(
+        "\nWrote {} cards to filepath {}",
+        anki_cards.len(),
+        _filepath
+    );
+    println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
     Ok(())
 }

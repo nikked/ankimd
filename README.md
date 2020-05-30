@@ -73,7 +73,6 @@ Last line of card back
 ```
 
 ## TODO
-* Print found tags while making csv output of cards
 * write old markdown to history-file "anki_history.md"
 * add verbosity CLI arg
 
