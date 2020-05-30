@@ -8,22 +8,10 @@ use chrono::Utc;
 use clap::Clap;
 use comrak::{markdown_to_html, ComrakOptions};
 use csv::Writer;
-use regex::Regex;
 use std::error::Error;
 
-struct AnkiCard {
-    front: String,
-    back: String,
-    card_type: AnkiCardType,
-    tags: Vec<String>,
-}
-
-#[derive(Debug)]
-enum AnkiCardType {
-    Basic,
-    BasicWithReverse,
-    Cloze,
-}
+mod schema;
+mod tags;
 
 const DEFAULT_OUT_FILEPATH: &'static str = "csv_outputs/YYYY-MM-DD_HH/basic.csv";
 
@@ -41,7 +29,7 @@ struct Opts {
 pub fn main() {
     let opts: Opts = Opts::parse();
     let raw_markdown: String = read_markdown(opts.input_file);
-    let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown.clone());
+    let anki_cards: Vec<schema::AnkiCard> = make_anki_cards(raw_markdown.clone());
     make_output_csv(&anki_cards, opts.output_file, opts.verbose);
     write_history(raw_markdown);
 }
@@ -50,8 +38,8 @@ fn read_markdown(filepath: String) -> String {
     fs::read_to_string(filepath).expect("Something went wrong reading the file")
 }
 
-fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
-    let mut anki_cards: Vec<AnkiCard> = Vec::new();
+fn make_anki_cards(raw_markdown: String) -> Vec<schema::AnkiCard> {
+    let mut anki_cards: Vec<schema::AnkiCard> = Vec::new();
 
     let mut temp_front: String = "".to_string();
     let mut temp_back: String = "".to_string();
@@ -61,11 +49,11 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
         // with ##. E.g. ## [Rust, udemy]
         if line.starts_with("## ") {
             if !temp_front.is_empty() {
-                anki_cards.push(AnkiCard {
+                anki_cards.push(schema::AnkiCard {
                     front: process_front(&temp_front),
                     back: process_back(&temp_back),
-                    card_type: determine_card_type(&temp_front),
-                    tags: find_tags(&temp_front, false),
+                    card_type: tags::determine_card_type(&temp_front),
+                    tags: tags::find_tags(&process_front(&temp_front), false),
                 });
             }
 
@@ -84,11 +72,11 @@ fn make_anki_cards(raw_markdown: String) -> Vec<AnkiCard> {
 
     // Add last card after exited loop
     if !temp_back.is_empty() {
-        anki_cards.push(AnkiCard {
+        anki_cards.push(schema::AnkiCard {
             front: process_front(&temp_front),
             back: process_back(&temp_back),
-            card_type: determine_card_type(&temp_front),
-            tags: find_tags(&temp_front, false),
+            card_type: tags::determine_card_type(&temp_front),
+            tags: tags::find_tags(&temp_front, false),
         })
     }
 
@@ -113,49 +101,8 @@ fn convert_markdown_to_html(input_markdown: &String) -> String {
     html_string
 }
 
-fn determine_card_type(front: &String) -> AnkiCardType {
-    for tag in find_tags(front, true) {
-        if "REV" == tag {
-            return AnkiCardType::BasicWithReverse;
-        } else if "CLO" == tag {
-            return AnkiCardType::Cloze;
-        }
-    }
-
-    AnkiCardType::Basic
-}
-
-fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
-    // Treat all terms in first [] as a tag literal
-    // E.g.: [Rust, udemy]
-    let re = Regex::new(r"\[.*\]").unwrap();
-
-    let matched_string: String = re
-        .captures(&process_front(front))
-        .unwrap()
-        .get(0)
-        .map_or("".to_string(), |m| m.as_str().to_string());
-
-    let matched_string = &matched_string[1..matched_string.len() - 1];
-
-    let mut tag_vector: Vec<String> = Vec::new();
-
-    tag_vector.push("ankimd".to_string());
-
-    for tag in matched_string.split(", ") {
-        let card_type_tags = vec!["BAS", "REV", "CLO"];
-
-        if card_type_tags.contains(&tag) && !keep_card_type_tags {
-            continue;
-        }
-        tag_vector.push(tag.to_string());
-    }
-
-    tag_vector
-}
-
 fn make_output_csv(
-    anki_cards: &Vec<AnkiCard>,
+    anki_cards: &Vec<schema::AnkiCard>,
     output_filepath: String,
     verbose: bool,
 ) -> Result<(), Box<dyn Error>> {
