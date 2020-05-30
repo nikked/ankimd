@@ -1,6 +1,8 @@
 #![allow(unused_must_use)]
 
 use std::fs;
+use std::fs::OpenOptions;
+use std::io::prelude::*;
 
 use chrono::Utc;
 use clap::Clap;
@@ -23,7 +25,7 @@ enum AnkiCardType {
     Cloze,
 }
 
-const DEFAULT_OUT_FILEPATH: &'static str = "496b076e";
+const DEFAULT_OUT_FILEPATH: &'static str = "csv_outputs/YYYY-MM-DD_HH/basic.csv";
 
 #[derive(Clap)]
 #[clap(version = "0.1.0", author = "Niko Linnansalo <niko@linnansalo.com>")]
@@ -39,8 +41,9 @@ struct Opts {
 pub fn main() {
     let opts: Opts = Opts::parse();
     let raw_markdown: String = read_markdown(opts.input_file);
-    let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown);
+    let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown.clone());
     make_output_csv(&anki_cards, opts.output_file, opts.verbose);
+    write_history(raw_markdown);
 }
 
 fn read_markdown(filepath: String) -> String {
@@ -194,4 +197,16 @@ fn make_output_csv(
     );
     println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
     Ok(())
+}
+
+fn write_history(raw_markdown: String) {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .append(true)
+        .open("anki_history.md")
+        .unwrap();
+    if let Err(e) = writeln!(file, "{}", &raw_markdown) {
+        eprintln!("Couldn't write to file: {}", e);
+    }
 }
