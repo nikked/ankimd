@@ -74,7 +74,6 @@ Last line of card back
 
 ## TODO
 * write old markdown to history-file "anki_history.md"
-* add verbosity CLI arg
 
 ### Make ankmd callable from anywhere in system
 * Release

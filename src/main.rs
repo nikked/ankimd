@@ -32,13 +32,15 @@ struct Opts {
     input_file: String,
     #[clap(short, long, default_value = DEFAULT_OUT_FILEPATH)]
     output_file: String,
+    #[clap(short, long)]
+    verbose: bool,
 }
 
 pub fn main() {
     let opts: Opts = Opts::parse();
     let raw_markdown: String = read_markdown(opts.input_file);
     let anki_cards: Vec<AnkiCard> = make_anki_cards(raw_markdown);
-    make_output_csv(&anki_cards, opts.output_file, true);
+    make_output_csv(&anki_cards, opts.output_file, opts.verbose);
 }
 
 fn read_markdown(filepath: String) -> String {
