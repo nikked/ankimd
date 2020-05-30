@@ -73,9 +73,9 @@ Last line of card back
 ```
 
 ## TODO
-* Write output to 2020-2805/basic.csv by default
 * Print found tags while making csv output of cards
 * write old markdown to history-file "anki_history.md"
+* add verbosity CLI arg
 
 ### Make ankmd callable from anywhere in system
 * Release

@@ -2,6 +2,7 @@
 
 use std::fs;
 
+use chrono::Utc;
 use clap::Clap;
 use comrak::{markdown_to_html, ComrakOptions};
 use csv::Writer;
@@ -22,12 +23,14 @@ enum AnkiCardType {
     Cloze,
 }
 
+const DEFAULT_OUT_FILEPATH: &'static str = "496b076e";
+
 #[derive(Clap)]
 #[clap(version = "0.1.0", author = "Niko Linnansalo <niko@linnansalo.com>")]
 struct Opts {
     #[clap(short, long, default_value = "anki.md")]
     input_file: String,
-    #[clap(short, long, default_value = "anki_output.csv")]
+    #[clap(short, long, default_value = DEFAULT_OUT_FILEPATH)]
     output_file: String,
 }
 
@@ -151,7 +154,15 @@ fn make_output_csv(
     filepath: String,
     verbose: bool,
 ) -> Result<(), Box<dyn Error>> {
-    let mut wtr = Writer::from_path(filepath.clone())?;
+    let mut _filepath = filepath.clone();
+
+    if _filepath == DEFAULT_OUT_FILEPATH {
+        let _outputdir = Utc::now().format("csv_outputs/%Y-%m-%d_%H/").to_string();
+        fs::create_dir_all(&_outputdir);
+        _filepath = _outputdir + "basic.csv"
+    }
+
+    let mut wtr = Writer::from_path(_filepath.clone())?;
 
     for card in anki_cards {
         if verbose {
@@ -170,6 +181,6 @@ fn make_output_csv(
 
     wtr.flush()?;
 
-    println!("Wrote {} cards to filepath {}", anki_cards.len(), filepath);
+    println!("Wrote {} cards to filepath {}", anki_cards.len(), _filepath);
     Ok(())
 }
