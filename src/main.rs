@@ -132,7 +132,7 @@ fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
 
     let mut tag_vector: Vec<String> = Vec::new();
 
-    tag_vector.push("anki-rust".to_string());
+    tag_vector.push("ankimd".to_string());
 
     for tag in matched_string.split(", ") {
         let card_type_tags = vec!["BAS", "REV", "CLO"];

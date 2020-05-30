@@ -2,4 +2,5 @@
 *.swp
 /target
 .DS_Store
+anki.md
 anki_history.md
