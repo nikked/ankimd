@@ -10,8 +10,15 @@ use csv::Writer;
 
 use crate::schema;
 
-pub fn read_markdown(file: &String) -> String {
+pub fn read_markdown(file: &String, verbose: bool) -> String {
     let sample_card = "## [Capitals] What is the capital of Finland?\nHelsinki".to_string();
+
+    if verbose {
+        println!(
+            "\n## [ankimd] The opinionated Anki-card maker\n\nExtracting cards from file: {}\n",
+            file
+        );
+    }
 
     match fs::metadata(file) {
         Ok(attr) => {
@@ -20,7 +27,10 @@ pub fn read_markdown(file: &String) -> String {
             }
         }
         Err(_) => {
-            println!("anki.md file does not exist. Creating a sample file.");
+            println!(
+                "File {} file does not exist. Creating a sample file.\n",
+                file
+            );
             create_sample_ankimd_file(&file, &sample_card);
         }
     };
@@ -47,7 +57,7 @@ pub fn make_output_csv(
             fs::create_dir_all(&_outputdir);
             _filepath = _outputdir + "basic.csv"
         } else {
-            _filepath = "anki_output.csv".to_string();
+            _filepath = schema::DEFAULT_OUT_FILEPATH.to_string();
         }
     }
 
@@ -59,8 +69,8 @@ pub fn make_output_csv(
         if verbose {
             println!("Front:\n{:?}\n", card.front);
             println!("Back:\n{:?}\n", card.back);
-            println!("Tags: {:?}\n", card.tags);
-            println!("Type: {:?}", card.card_type);
+            println!("Tags: {:?}", card.tags);
+            println!("Type: {:?}\n\n---\n", card.card_type);
         }
 
         all_tags.extend(card.tags.iter().cloned());
@@ -74,17 +84,19 @@ pub fn make_output_csv(
 
     wtr.flush()?;
 
-    println!(
-        "\nWrote {} cards to filepath {}",
-        anki_cards.len(),
-        _filepath
-    );
+    if verbose {
+        if anki_cards.len() == 1 {
+            println!("\nWrote {} card to file: {}", anki_cards.len(), _filepath);
+        } else {
+            println!("\nWrote {} cards to file: {}", anki_cards.len(), _filepath);
+        }
 
-    // Remove dupe tags from tags vec
-    let set: HashSet<_> = all_tags.drain(..).collect();
-    all_tags.extend(set.into_iter());
+        // Remove dupe tags from tags vec
+        let set: HashSet<_> = all_tags.drain(..).collect();
+        all_tags.extend(set.into_iter());
 
-    println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
+        println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
+    }
     Ok(())
 }
 
@@ -93,7 +105,7 @@ pub fn write_history(raw_markdown: String) {
         .write(true)
         .create(true)
         .append(true)
-        .open("anki_history.md")
+        .open("ankimd_history.md")
         .unwrap();
     if let Err(e) = writeln!(file, "{}", &raw_markdown) {
         eprintln!("Couldn't write to file: {}", e);

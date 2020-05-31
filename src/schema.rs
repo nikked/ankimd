@@ -1,4 +1,4 @@
-pub const DEFAULT_OUT_FILEPATH: &'static str = "csv_outputs/YYYY-MM-DD_HH/basic.csv";
+pub const DEFAULT_OUT_FILEPATH: &'static str = "ankimd_output.csv";
 
 #[derive(Clone, Debug)]
 pub struct AnkiCard {
