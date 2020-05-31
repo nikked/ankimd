@@ -74,9 +74,6 @@ Last line of card back
 
 ## TODO
 
-* clear anki.md after making cards: CLI arg
-* write by default to anki_output.csv and make date folder behind CLI arg
-
 
 
 ### Card types

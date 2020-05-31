@@ -37,13 +37,18 @@ pub fn make_output_csv(
     anki_cards: &Vec<schema::AnkiCard>,
     output_filepath: String,
     verbose: bool,
+    use_date_folder: bool,
 ) -> Result<(), Box<dyn Error>> {
     let mut _filepath = output_filepath.clone();
 
     if _filepath == schema::DEFAULT_OUT_FILEPATH {
-        let _outputdir = Local::now().format("csv_outputs/%Y-%m-%d_%H/").to_string();
-        fs::create_dir_all(&_outputdir);
-        _filepath = _outputdir + "basic.csv"
+        if use_date_folder {
+            let _outputdir = Local::now().format("csv_outputs/%Y-%m-%d_%H/").to_string();
+            fs::create_dir_all(&_outputdir);
+            _filepath = _outputdir + "basic.csv"
+        } else {
+            _filepath = "anki_output.csv".to_string();
+        }
     }
 
     let mut wtr = Writer::from_path(_filepath.clone())?;
