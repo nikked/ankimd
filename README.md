@@ -78,10 +78,6 @@ Last line of card back
 * write by default to anki_output.csv and make date folder behind CLI arg
 
 
-### Error handling
-
-* if no anki.md file, create it with a sample card
-* if anki.md file empty, inform about this to user
 
 ### Card types
 * Add card type support

@@ -1,15 +1,36 @@
-use chrono::Local;
-use csv::Writer;
 use std::collections::HashSet;
 use std::error::Error;
 use std::fs;
+use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::Write;
 
+use chrono::Local;
+use csv::Writer;
+
 use crate::schema;
 
-pub fn read_markdown(filepath: String) -> String {
-    fs::read_to_string(filepath).expect("Something went wrong reading the file")
+pub fn read_markdown(file: &String) -> String {
+    let sample_card = "## [Capitals] What is the capital of Finland?\nHelsinki".to_string();
+
+    match fs::metadata(file) {
+        Ok(attr) => {
+            if !attr.is_dir() {
+                return fs::read_to_string(file).expect("Something went wrong reading the file");
+            }
+        }
+        Err(_) => {
+            println!("anki.md file does not exist. Creating a sample file.");
+            create_sample_ankimd_file(&file, &sample_card);
+        }
+    };
+    return sample_card;
+}
+
+fn create_sample_ankimd_file(filepath: &String, card_content: &String) -> std::io::Result<()> {
+    let mut file = File::create(filepath)?;
+    file.write_all(card_content.as_bytes())?;
+    Ok(())
 }
 
 pub fn make_output_csv(
