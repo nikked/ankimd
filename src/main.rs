@@ -3,7 +3,7 @@
 use clap::Clap;
 
 mod formatters;
-mod io_util;
+mod io_utils;
 mod make_anki_cards;
 mod schema;
 mod tags;
@@ -21,8 +21,8 @@ struct Opts {
 
 pub fn main() {
     let opts: Opts = Opts::parse();
-    let raw_markdown: String = io_util::read_markdown(opts.input_file);
+    let raw_markdown: String = io_utils::read_markdown(opts.input_file);
     let anki_cards: Vec<schema::AnkiCard> = make_anki_cards::make_anki_cards(raw_markdown.clone());
-    io_util::make_output_csv(&anki_cards, opts.output_file, opts.verbose);
-    io_util::write_history(raw_markdown);
+    io_utils::make_output_csv(&anki_cards, opts.output_file, opts.verbose);
+    io_utils::write_history(raw_markdown);
 }
