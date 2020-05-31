@@ -4,7 +4,7 @@ use std::fs;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 
-use chrono::Utc;
+use chrono::Local;
 use clap::Clap;
 use comrak::{markdown_to_html, ComrakOptions};
 use csv::Writer;
@@ -53,7 +53,7 @@ fn make_anki_cards(raw_markdown: String) -> Vec<schema::AnkiCard> {
                     front: process_front(&temp_front),
                     back: process_back(&temp_back),
                     card_type: tags::determine_card_type(&temp_front),
-                    tags: tags::find_tags(&process_front(&temp_front), false),
+                    tags: tags::find_tags(&temp_front, false),
                 });
             }
 
@@ -109,7 +109,7 @@ fn make_output_csv(
     let mut _filepath = output_filepath.clone();
 
     if _filepath == DEFAULT_OUT_FILEPATH {
-        let _outputdir = Utc::now().format("csv_outputs/%Y-%m-%d_%H/").to_string();
+        let _outputdir = Local::now().format("csv_outputs/%Y-%m-%d_%H/").to_string();
         fs::create_dir_all(&_outputdir);
         _filepath = _outputdir + "basic.csv"
     }
