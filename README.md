@@ -74,6 +74,8 @@ Last line of card back
 
 ## TODO
 
+* clear anki.md after making cards
+
 
 ### Card types
 * Add card type support

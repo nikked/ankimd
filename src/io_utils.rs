@@ -1,5 +1,6 @@
 use chrono::Local;
 use csv::Writer;
+use std::collections::HashSet;
 use std::error::Error;
 use std::fs;
 use std::fs::OpenOptions;
@@ -52,6 +53,8 @@ pub fn make_output_csv(
         anki_cards.len(),
         _filepath
     );
+    let set: HashSet<_> = all_tags.drain(..).collect();
+    all_tags.extend(set.into_iter());
     println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
     Ok(())
 }
