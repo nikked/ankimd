@@ -24,13 +24,13 @@ pub fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
 
     tag_vector.push("ankimd".to_string());
 
-    for tag in matched_string.split(", ") {
+    for tag in matched_string.split(",") {
         let card_type_tags = vec!["BAS", "REV", "CLO"];
 
         if card_type_tags.contains(&tag) && !keep_card_type_tags {
             continue;
         }
-        tag_vector.push(tag.to_string());
+        tag_vector.push(tag.to_string().trim().to_string());
     }
 
     tag_vector
@@ -67,7 +67,7 @@ mod tests {
     #[test]
     fn test_tags_returned_from_first_line_in_multiline_front() {
         let tags = find_tags(
-            &"## [sample_tag1, sample_tag2] Front with tag vector[tag tag2]".to_string(),
+            &"## [sample_tag1,sample_tag2] Front with tag vector[tag tag2]".to_string(),
             true,
         );
 
