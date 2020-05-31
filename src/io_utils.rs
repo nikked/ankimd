@@ -53,8 +53,11 @@ pub fn make_output_csv(
         anki_cards.len(),
         _filepath
     );
+
+    // Remove dupe tags from tags vec
     let set: HashSet<_> = all_tags.drain(..).collect();
     all_tags.extend(set.into_iter());
+
     println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
     Ok(())
 }

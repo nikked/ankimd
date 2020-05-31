@@ -1,4 +1,4 @@
-# ankimd: Opinionated Anki-card maker
+# ankimd: The opinionated Anki-card maker
 
 > Write Anki cards in Markdown and import to Anki as csv file
 
@@ -74,8 +74,14 @@ Last line of card back
 
 ## TODO
 
-* clear anki.md after making cards
+* clear anki.md after making cards: CLI arg
+* write by default to anki_output.csv and make date folder behind CLI arg
 
+
+### Error handling
+
+* if no anki.md file, create it with a sample card
+* if anki.md file empty, inform about this to user
 
 ### Card types
 * Add card type support

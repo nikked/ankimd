@@ -9,7 +9,12 @@ mod schema;
 mod tags;
 
 #[derive(Clap)]
-#[clap(version = "0.1.0", author = "Niko Linnansalo <niko@linnansalo.com>")]
+#[clap(
+    version = "0.1.0",
+    author = "Niko Linnansalo <niko@linnansalo.com>",
+    about = "\nankimd: The opinionated Anki-card maker\
+    \nWrite cards in markdown. Import cards to Anki as csv."
+)]
 struct Opts {
     #[clap(short, long, default_value = "anki.md")]
     input_file: String,
