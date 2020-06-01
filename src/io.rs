@@ -67,10 +67,10 @@ pub fn make_output_csv(
 
     for card in anki_cards {
         if verbose {
-            println!("Front:\n{:?}\n", card.front);
+            println!("---\n\nFront:\n{:?}\n", card.front);
             println!("Back:\n{:?}\n", card.back);
             println!("Tags: {:?}", card.tags);
-            println!("Type: {:?}\n\n---\n", card.card_type);
+            println!("Type: {:?}\n\n", card.card_type);
         }
 
         all_tags.extend(card.tags.iter().cloned());

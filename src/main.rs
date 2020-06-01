@@ -29,7 +29,7 @@ struct Opts {
 pub fn main() {
     let opts: Opts = Opts::parse();
     let raw_markdown: String = io::read_markdown(&opts.input_file, !opts.silent);
-    let anki_cards: Vec<schema::AnkiCard> = make_anki_cards::make_anki_cards(raw_markdown.clone());
+    let anki_cards: Vec<schema::AnkiCard> = make_anki_cards::make_anki_cards(&raw_markdown);
     io::make_output_csv(
         &anki_cards,
         opts.output_file,

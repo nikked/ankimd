@@ -74,7 +74,47 @@ Last line of card back
 
 ## TODO
 
+* flag for emptying file after making cards
+* make all functions take &str as param instead of String or &String
 
+
+## Lib and bin
+* Move most code in lib and make it its own crate
+  * make it testable in /tests
+* split code into bin and lib
+  * move most logic to its own crate (lib) and keep main super lean -> Result<(), Error> 
+
+```toml
+[lib]
+name = "tags"
+path = "src/tags.rs"
+
+[lib]
+name = "formatters"
+path = "src/formatters.rs"
+
+[lib]
+name = "io"
+path = "src/io.rs"
+
+[lib]
+name = "schema"
+path = "src/schema.rs"
+
+[lib]
+name = "make_anki_cards"
+path = "src/make_anki_cards.rs"
+
+[[bin]]
+name = "ankimd"
+path = "src/main.rs"
+```
+
+
+### Error handling
+* get rid of all unwrap and expect; handle errors gracefully
+* make the output types of all io funtions: Result/ Option 
+* make output of main  -> Result<(), Error>  
 
 ### Card types
 * Add card type support

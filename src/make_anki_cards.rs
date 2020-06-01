@@ -2,7 +2,7 @@ use crate::formatters;
 use crate::schema;
 use crate::tags;
 
-pub fn make_anki_cards(raw_markdown: String) -> Vec<schema::AnkiCard> {
+pub fn make_anki_cards(raw_markdown: &str) -> Vec<schema::AnkiCard> {
     let mut anki_cards: Vec<schema::AnkiCard> = Vec::new();
 
     let mut temp_front: String = "".to_string();
@@ -54,7 +54,7 @@ mod tests {
     #[test]
     fn test_make_anki_cards() {
         let new_cards = make_anki_cards(
-            "## [sample_tag1, sample_tag2] What is the meaning of life? \n 42".to_string(),
+            &"## [sample_tag1, sample_tag2] What is the meaning of life? \n 42".to_string(),
         );
 
         assert_eq!(new_cards.len(), 1);
