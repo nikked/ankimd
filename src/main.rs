@@ -2,8 +2,7 @@
 
 use clap::Clap;
 
-extern crate make_anki_cards;
-use make_anki_cards::make_anki_csv;
+extern crate anki_csv;
 
 #[derive(Clap)]
 #[clap(
@@ -25,7 +24,7 @@ struct Opts {
 
 pub fn main() {
     let opts: Opts = Opts::parse();
-    make_anki_csv(
+    anki_csv::make(
         &opts.input_file,
         &opts.output_file,
         !opts.silent,

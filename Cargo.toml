@@ -5,8 +5,8 @@ authors = ["Niko Linnansalo <niko@linnansalo.com>"]
 edition = "2018"
 
 [lib]
-name = "make_anki_cards"
-path = "src/lib.rs"
+name = "anki_csv"
+path = "src/anki_csv.rs"
 
 [[bin]]
 name = "ankimd"
