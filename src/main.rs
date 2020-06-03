@@ -19,7 +19,7 @@ struct Opts {
     #[clap(short, long)]
     silent: bool,
     #[clap(short, long)]
-    date_folder: bool,
+    uses_date_folder: bool,
 }
 
 pub fn main() {
@@ -28,6 +28,6 @@ pub fn main() {
         &opts.input_file,
         &opts.output_file,
         !opts.silent,
-        opts.date_folder,
+        opts.uses_date_folder,
     );
 }
