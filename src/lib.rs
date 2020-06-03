@@ -1,6 +1,16 @@
-use crate::formatters;
-use crate::schema;
-use crate::tags;
+#![allow(unused_must_use)]
+
+mod formatters;
+mod io;
+mod schema;
+mod tags;
+
+pub fn make_anki_csv(input_file: &String, output_file: &String, verbose: bool, date_folder: bool) {
+    let raw_markdown: String = io::read_markdown(input_file, verbose);
+    let anki_cards: Vec<schema::AnkiCard> = make_anki_cards(&raw_markdown);
+    io::make_output_csv(&anki_cards, output_file.to_string(), verbose, date_folder);
+    io::write_history(raw_markdown);
+}
 
 pub fn make_anki_cards(raw_markdown: &str) -> Vec<schema::AnkiCard> {
     let mut anki_cards: Vec<schema::AnkiCard> = Vec::new();

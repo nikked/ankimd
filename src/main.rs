@@ -2,11 +2,8 @@
 
 use clap::Clap;
 
-mod formatters;
-mod io;
-mod make_anki_cards;
-mod schema;
-mod tags;
+extern crate make_anki_cards;
+use make_anki_cards::make_anki_csv;
 
 #[derive(Clap)]
 #[clap(
@@ -18,7 +15,7 @@ mod tags;
 struct Opts {
     #[clap(short, long, default_value = "anki.md")]
     input_file: String,
-    #[clap(short, long, default_value = schema::DEFAULT_OUT_FILEPATH)]
+    #[clap(short, long, default_value = "ankimd_output.csv")]
     output_file: String,
     #[clap(short, long)]
     silent: bool,
@@ -28,13 +25,10 @@ struct Opts {
 
 pub fn main() {
     let opts: Opts = Opts::parse();
-    let raw_markdown: String = io::read_markdown(&opts.input_file, !opts.silent);
-    let anki_cards: Vec<schema::AnkiCard> = make_anki_cards::make_anki_cards(&raw_markdown);
-    io::make_output_csv(
-        &anki_cards,
-        opts.output_file,
+    make_anki_csv(
+        &opts.input_file,
+        &opts.output_file,
         !opts.silent,
         opts.date_folder,
     );
-    io::write_history(raw_markdown);
 }
