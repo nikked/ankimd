@@ -1,16 +1,14 @@
 use std::collections::HashSet;
-use std::error::Error;
 use std::fs;
-use std::fs::File;
-use std::fs::OpenOptions;
 use std::io::Write;
 
 use chrono::Local;
 use csv::Writer;
 
-use crate::schema;
+use crate::error::AnkiCsvError;
+use crate::schema::{AnkiCard, DEFAULT_OUT_FILEPATH};
 
-pub fn read_markdown(file: &str, verbose: bool) -> String {
+pub fn read_markdown(file: &str, verbose: bool) -> Result<String, AnkiCsvError> {
     let sample_card = "## [Capitals] What is the capital of Finland?\nHelsinki".to_string();
 
     if verbose {
@@ -23,7 +21,13 @@ pub fn read_markdown(file: &str, verbose: bool) -> String {
     match fs::metadata(file) {
         Ok(attr) => {
             if !attr.is_dir() {
-                return fs::read_to_string(file).expect("Something went wrong reading the file");
+                let input_string = fs::read_to_string(file)?;
+
+                if input_string.chars().count() < 3 {
+                    return Err(AnkiCsvError::Message("Input file is empty. Exiting."));
+                }
+
+                return Ok(input_string);
             }
         }
         Err(_) => {
@@ -31,33 +35,33 @@ pub fn read_markdown(file: &str, verbose: bool) -> String {
                 "File {} file does not exist. Creating a sample file.\n",
                 file
             );
-            create_sample_ankimd_file(&file, &sample_card);
+            create_sample_ankimd_file(&file, &sample_card)?;
         }
     };
-    return sample_card;
+    return Ok(sample_card);
 }
 
 fn create_sample_ankimd_file(filepath: &str, card_content: &str) -> std::io::Result<()> {
-    let mut file = File::create(filepath)?;
+    let mut file = fs::File::create(filepath)?;
     file.write_all(card_content.as_bytes())?;
     Ok(())
 }
 
 pub fn make_output_csv(
-    anki_cards: &Vec<schema::AnkiCard>,
+    anki_cards: &Vec<AnkiCard>,
     output_filepath: String,
     verbose: bool,
     use_uses_date_folder: bool,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), AnkiCsvError> {
     let mut _filepath = output_filepath.clone();
 
-    if _filepath == schema::DEFAULT_OUT_FILEPATH {
+    if _filepath == DEFAULT_OUT_FILEPATH {
         if use_uses_date_folder {
             let _outputdir = Local::now().format("csv_outputs/%Y-%m-%d_%H/").to_string();
-            fs::create_dir_all(&_outputdir);
+            fs::create_dir_all(&_outputdir)?;
             _filepath = _outputdir + "basic.csv"
         } else {
-            _filepath = schema::DEFAULT_OUT_FILEPATH.to_string();
+            _filepath = DEFAULT_OUT_FILEPATH.to_string();
         }
     }
 
@@ -100,14 +104,11 @@ pub fn make_output_csv(
     Ok(())
 }
 
-pub fn write_history(raw_markdown: String) {
-    let mut file = OpenOptions::new()
+pub fn write_history(raw_markdown: String) -> Result<(), AnkiCsvError> {
+    let mut file = fs::OpenOptions::new()
         .write(true)
         .create(true)
         .append(true)
-        .open("ankimd_history.md")
-        .unwrap();
-    if let Err(e) = writeln!(file, "{}", &raw_markdown) {
-        eprintln!("Couldn't write to file: {}", e);
-    }
+        .open("ankimd_history.md")?;
+    Ok(writeln!(file, "{}", &raw_markdown)?)
 }

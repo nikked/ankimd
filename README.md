@@ -104,13 +104,11 @@ Last line of card back
 
 ## TODO
 
-* flag for emptying file after making cards
-
+### Bugs
+* Crash if multi-line file without front and word on third line
 
 ### Error handling
 * get rid of all unwrap and expect; handle errors gracefully
-* make the output types of all io funtions: Result/ Option 
-* make output of main  -> Result<(), Error>  
 
 ### Card types
 * Add card type support
@@ -121,6 +119,7 @@ https://github.com/cobalt-org/cobalt.rs/blob/master/src/syntax_highlight/syntect
 
 ### CLI
 * Enabling adding tag vector as CLI arg (default: [anki-rust])
+* flag for emptying file after making cards
 
 ### Hygiene
 * Investigate why 'let matched_string' is allowed twice

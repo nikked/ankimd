@@ -1,24 +1,33 @@
-#![allow(unused_must_use)]
-
+mod error;
 mod formatters;
 mod io;
 mod schema;
 mod tags;
 
-pub fn make(input_file: &str, output_file: &str, verbose: bool, uses_date_folder: bool) {
-    let raw_markdown: String = io::read_markdown(input_file, verbose);
-    let anki_cards: Vec<schema::AnkiCard> = make_anki_cards(&raw_markdown);
+pub use error::AnkiCsvError;
+pub use schema::AnkiCard;
+
+pub fn make(
+    input_file: &str,
+    output_file: &str,
+    verbose: bool,
+    uses_date_folder: bool,
+) -> Result<(), AnkiCsvError> {
+    let raw_markdown: String = io::read_markdown(input_file, verbose)?;
+    let anki_cards: Vec<AnkiCard> = make_anki_cards(&raw_markdown)?;
     io::make_output_csv(
         &anki_cards,
         output_file.to_string(),
         verbose,
         uses_date_folder,
-    );
-    io::write_history(raw_markdown);
+    )?;
+    io::write_history(raw_markdown)?;
+
+    Ok(())
 }
 
-pub fn make_anki_cards(raw_markdown: &str) -> Vec<schema::AnkiCard> {
-    let mut anki_cards: Vec<schema::AnkiCard> = Vec::new();
+pub fn make_anki_cards(raw_markdown: &str) -> Result<Vec<AnkiCard>, AnkiCsvError> {
+    let mut anki_cards: Vec<AnkiCard> = Vec::new();
 
     let mut temp_front: String = "".to_string();
     let mut temp_back: String = "".to_string();
@@ -28,7 +37,7 @@ pub fn make_anki_cards(raw_markdown: &str) -> Vec<schema::AnkiCard> {
         // with ##. E.g. ## [Rust, udemy]
         if line.starts_with("## ") {
             if !temp_front.is_empty() {
-                anki_cards.push(schema::AnkiCard {
+                anki_cards.push(AnkiCard {
                     front: formatters::format_front(&temp_front),
                     back: formatters::format_back(&temp_back),
                     card_type: tags::determine_card_type(&temp_front),
@@ -51,7 +60,7 @@ pub fn make_anki_cards(raw_markdown: &str) -> Vec<schema::AnkiCard> {
 
     // Add last card after exited loop
     if !temp_back.is_empty() {
-        anki_cards.push(schema::AnkiCard {
+        anki_cards.push(AnkiCard {
             front: formatters::format_front(&temp_front),
             back: formatters::format_back(&temp_back),
             card_type: tags::determine_card_type(&temp_front),
@@ -59,5 +68,5 @@ pub fn make_anki_cards(raw_markdown: &str) -> Vec<schema::AnkiCard> {
         })
     }
 
-    anki_cards
+    Ok(anki_cards)
 }

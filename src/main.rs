@@ -1,4 +1,5 @@
 use clap::Clap;
+use failure::Error;
 
 extern crate anki_csv;
 
@@ -20,12 +21,14 @@ struct Opts {
     uses_date_folder: bool,
 }
 
-pub fn main() {
+pub fn main() -> Result<(), Error> {
     let opts: Opts = Opts::parse();
     anki_csv::make(
         &opts.input_file,
         &opts.output_file,
         !opts.silent,
         opts.uses_date_folder,
-    );
+    )?;
+
+    Ok(())
 }
