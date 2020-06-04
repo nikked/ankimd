@@ -1,5 +1,3 @@
-#![allow(unused_must_use)]
-
 use clap::Clap;
 
 extern crate anki_csv;

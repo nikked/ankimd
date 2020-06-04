@@ -8,7 +8,12 @@ mod tags;
 pub fn make(input_file: &String, output_file: &String, verbose: bool, uses_date_folder: bool) {
     let raw_markdown: String = io::read_markdown(input_file, verbose);
     let anki_cards: Vec<schema::AnkiCard> = make_anki_cards(&raw_markdown);
-    io::make_output_csv(&anki_cards, output_file.to_string(), verbose, uses_date_folder);
+    io::make_output_csv(
+        &anki_cards,
+        output_file.to_string(),
+        verbose,
+        uses_date_folder,
+    );
     io::write_history(raw_markdown);
 }
 
@@ -55,27 +60,4 @@ pub fn make_anki_cards(raw_markdown: &str) -> Vec<schema::AnkiCard> {
     }
 
     anki_cards
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_make_anki_cards() {
-        let new_cards = make_anki_cards(
-            &"## [sample_tag1, sample_tag2] What is the meaning of life? \n 42".to_string(),
-        );
-
-        assert_eq!(new_cards.len(), 1);
-
-        let card = &new_cards[0];
-        assert_eq!(
-            card.front,
-            "<p>[sample_tag1, sample_tag2] What is the meaning of life?</p>\n"
-        );
-        assert_eq!(card.back, "<p>42</p>\n");
-        assert_eq!(format!("{:?}", card.card_type), "Basic");
-        assert_eq!(card.tags, ["ankimd", "sample_tag1", "sample_tag2"]);
-    }
 }

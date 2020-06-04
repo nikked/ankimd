@@ -49,7 +49,7 @@ pub fn determine_card_type(front: &String) -> schema::AnkiCardType {
 }
 
 #[cfg(test)]
-mod tests {
+mod test_determine_card_type {
     use super::*;
 
     #[test]
@@ -63,6 +63,11 @@ mod tests {
         let card_type = determine_card_type(&"## [REV] ".to_string());
         assert_eq!(format!("{:?}", card_type), "BasicWithReverse");
     }
+}
+
+#[cfg(test)]
+mod test_find_tags {
+    use super::*;
 
     #[test]
     fn test_tags_returned_from_first_line_in_multiline_front() {
