@@ -2,7 +2,7 @@ use regex::Regex;
 
 use crate::schema;
 
-pub fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
+pub fn find_tags(front: &str, keep_card_type_tags: bool) -> Vec<String> {
     // The tag vector has to be the first item in the front
     if !front.starts_with(&"## [") {
         return Vec::new();
@@ -36,7 +36,7 @@ pub fn find_tags(front: &String, keep_card_type_tags: bool) -> Vec<String> {
     tag_vector
 }
 
-pub fn determine_card_type(front: &String) -> schema::AnkiCardType {
+pub fn determine_card_type(front: &str) -> schema::AnkiCardType {
     for tag in find_tags(front, true) {
         if "REV" == tag {
             return schema::AnkiCardType::BasicWithReverse;

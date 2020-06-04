@@ -10,7 +10,7 @@ use csv::Writer;
 
 use crate::schema;
 
-pub fn read_markdown(file: &String, verbose: bool) -> String {
+pub fn read_markdown(file: &str, verbose: bool) -> String {
     let sample_card = "## [Capitals] What is the capital of Finland?\nHelsinki".to_string();
 
     if verbose {
@@ -37,7 +37,7 @@ pub fn read_markdown(file: &String, verbose: bool) -> String {
     return sample_card;
 }
 
-fn create_sample_ankimd_file(filepath: &String, card_content: &String) -> std::io::Result<()> {
+fn create_sample_ankimd_file(filepath: &str, card_content: &str) -> std::io::Result<()> {
     let mut file = File::create(filepath)?;
     file.write_all(card_content.as_bytes())?;
     Ok(())

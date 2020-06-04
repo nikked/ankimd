@@ -5,7 +5,7 @@ mod io;
 mod schema;
 mod tags;
 
-pub fn make(input_file: &String, output_file: &String, verbose: bool, uses_date_folder: bool) {
+pub fn make(input_file: &str, output_file: &str, verbose: bool, uses_date_folder: bool) {
     let raw_markdown: String = io::read_markdown(input_file, verbose);
     let anki_cards: Vec<schema::AnkiCard> = make_anki_cards(&raw_markdown);
     io::make_output_csv(

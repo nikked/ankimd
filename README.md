@@ -105,8 +105,6 @@ Last line of card back
 ## TODO
 
 * flag for emptying file after making cards
-* make all functions take &str as param instead of String or &String
-
 
 
 ### Error handling
