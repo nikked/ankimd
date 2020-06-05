@@ -104,8 +104,6 @@ Last line of card back
 
 ## TODO
 
-### Bugs
-* Crash if multi-line file without front and word on third line
 
 ### Error handling
 * get rid of all unwrap and expect; handle errors gracefully

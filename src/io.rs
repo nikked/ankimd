@@ -41,6 +41,15 @@ pub fn read_markdown(file: &str, verbose: bool) -> Result<String, AnkiCsvError> 
     return Ok(sample_card);
 }
 
+pub fn validate_raw_markdown(input: &str) -> Result<(), AnkiCsvError> {
+    if input.starts_with("## ") {
+        return Ok(());
+    }
+    Err(AnkiCsvError::Message(
+        "Anki-file has to begin with card front: `## [tag1, tag2] Example front`",
+    ))
+}
+
 fn create_sample_ankimd_file(filepath: &str, card_content: &str) -> std::io::Result<()> {
     let mut file = fs::File::create(filepath)?;
     file.write_all(card_content.as_bytes())?;
@@ -111,4 +120,22 @@ pub fn write_history(raw_markdown: String) -> Result<(), AnkiCsvError> {
         .append(true)
         .open("ankimd_history.md")?;
     Ok(writeln!(file, "{}", &raw_markdown)?)
+}
+
+#[cfg(test)]
+mod test_validate_input {
+    use super::*;
+
+    #[test]
+    fn test_error_is_raised_when_file_does_begin_with_card_front() {
+        let s = match validate_raw_markdown(&" \n42".to_string()) {
+            Ok(_v) => "OK".to_string(),
+            Err(e) => e.to_string(),
+        };
+
+        assert_eq!(
+            s,
+            "Error: \"Anki-file has to begin with card front: `## [tag1, tag2] Example front`\""
+        )
+    }
 }

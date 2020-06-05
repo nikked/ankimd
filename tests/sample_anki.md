@@ -1,4 +1,3 @@
-
 ## [Capitals] What is the capital of Finland?
 Helsinki
 

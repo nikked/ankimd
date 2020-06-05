@@ -14,6 +14,7 @@ pub fn make(
     uses_date_folder: bool,
 ) -> Result<(), AnkiCsvError> {
     let raw_markdown: String = io::read_markdown(input_file, verbose)?;
+    io::validate_raw_markdown(&raw_markdown)?;
     let anki_cards: Vec<AnkiCard> = make_anki_cards(&raw_markdown)?;
     io::make_output_csv(
         &anki_cards,

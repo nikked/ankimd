@@ -31,9 +31,3 @@ fn test_make_anki_cards() -> Result<(), Error> {
 
     Ok(())
 }
-
-#[test]
-#[should_panic]
-fn test_make_anki_cards_crashing_on_input_without_front() {
-    anki_csv::make_anki_cards(&" \n 42".to_string());
-}
