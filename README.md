@@ -105,6 +105,19 @@ Last line of card back
 ## TODO
 
 
+### Database
+* Diesel
+* PostgreSQL
+
+### Web server
+* Futures (?)
+* Rocket
+* HTML
+
+### Ankimd.js
+* Clojurescript
+* Reagent
+
 ### Error handling
 * get rid of all unwrap and expect; handle errors gracefully
 
@@ -113,7 +126,10 @@ Last line of card back
 * Remove BAS, REV, CLO from tag literal in card front
 
 ### Add syntax highlighting
-https://github.com/cobalt-org/cobalt.rs/blob/master/src/syntax_highlight/syntect.rs
+* Do native rust. https://github.com/cobalt-org/cobalt.rs/blob/master/src/syntax_highlight/syntect.rs
+* Or call python 2 formatter.
+* https://github.com/markdown-it/markdown-it#syntax-highlighting
+https://medium.com/paloit/speed-up-your-javascript-with-rust-7661922562fa
 
 ### CLI
 * Enabling adding tag vector as CLI arg (default: [anki-rust])
@@ -122,4 +138,3 @@ https://github.com/cobalt-org/cobalt.rs/blob/master/src/syntax_highlight/syntect
 ### Hygiene
 * Investigate why 'let matched_string' is allowed twice
 * Add type defs to all vars (?)
-
