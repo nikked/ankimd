@@ -24,7 +24,7 @@ pub fn read_markdown(file: &str, verbose: bool) -> Result<String, AnkiCsvError> 
                 let input_string = fs::read_to_string(file)?;
 
                 if input_string.chars().count() < 3 {
-                    return Err(AnkiCsvError::Message("Input file is empty. Exiting."));
+                    return Err(AnkiCsvError::AnkimdError("Input file is empty. Exiting."));
                 }
 
                 return Ok(input_string);
@@ -45,7 +45,7 @@ pub fn validate_raw_markdown(input: &str) -> Result<(), AnkiCsvError> {
     if input.starts_with("## ") {
         return Ok(());
     }
-    Err(AnkiCsvError::Message(
+    Err(AnkiCsvError::AnkimdError(
         "Anki-file has to begin with card front: `## [tag1, tag2] Example front`",
     ))
 }

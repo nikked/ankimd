@@ -7,7 +7,7 @@ pub enum AnkiCsvError {
     #[fail(display = "Could not write to csv: {:?}", 0)]
     CsvWritingError(csv::Error),
     #[fail(display = "Error: {:?}", 0)]
-    Message(&'static str),
+    AnkimdError(&'static str),
 }
 
 impl From<std::io::Error> for AnkiCsvError {
@@ -18,7 +18,7 @@ impl From<std::io::Error> for AnkiCsvError {
 
 impl From<&'static str> for AnkiCsvError {
     fn from(e: &'static str) -> Self {
-        AnkiCsvError::Message(e)
+        AnkiCsvError::AnkimdError(e)
     }
 }
 
