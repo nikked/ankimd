@@ -12,10 +12,11 @@ pub fn make(
     output_file: &str,
     verbose: bool,
     uses_date_folder: bool,
+    add_ankimd_tag: bool,
 ) -> Result<(), AnkiCsvError> {
     let raw_markdown: String = io::read_markdown(input_file, verbose)?;
     io::validate_raw_markdown(&raw_markdown)?;
-    let anki_cards: Vec<AnkiCard> = make_anki_cards(&raw_markdown, verbose)?;
+    let anki_cards: Vec<AnkiCard> = make_anki_cards(&raw_markdown, verbose, add_ankimd_tag)?;
     io::make_output_csv(
         &anki_cards,
         output_file.to_string(),
@@ -27,7 +28,11 @@ pub fn make(
     Ok(())
 }
 
-fn make_anki_cards(raw_markdown: &str, verbose: bool) -> Result<Vec<AnkiCard>, AnkiCsvError> {
+fn make_anki_cards(
+    raw_markdown: &str,
+    verbose: bool,
+    add_ankimd_tag: bool,
+) -> Result<Vec<AnkiCard>, AnkiCsvError> {
     let mut anki_cards: Vec<AnkiCard> = Vec::new();
 
     let mut temp_front: String = "".to_string();
@@ -42,7 +47,7 @@ fn make_anki_cards(raw_markdown: &str, verbose: bool) -> Result<Vec<AnkiCard>, A
                     front: formatters::format_front(&temp_front),
                     back: formatters::format_back(&temp_back),
                     card_type: tags::determine_card_type(&temp_front),
-                    tags: tags::find_tags(&temp_front, false),
+                    tags: tags::find_tags(&temp_front, false, add_ankimd_tag),
                 };
 
                 if verbose {
@@ -70,7 +75,7 @@ fn make_anki_cards(raw_markdown: &str, verbose: bool) -> Result<Vec<AnkiCard>, A
             front: formatters::format_front(&temp_front),
             back: formatters::format_back(&temp_back),
             card_type: tags::determine_card_type(&temp_front),
-            tags: tags::find_tags(&temp_front, false),
+            tags: tags::find_tags(&temp_front, false, add_ankimd_tag),
         };
         if verbose {
             log_new_card(&last_anki_card, &temp_front, &temp_back);

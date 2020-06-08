@@ -108,7 +108,11 @@ pub fn make_output_csv(
         let set: HashSet<_> = all_tags.drain(..).collect();
         all_tags.extend(set.into_iter());
 
-        println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
+        if all_tags.len() == 1 {
+            println!("Found {} tag in cards: {:?}", all_tags.len(), all_tags);
+        } else {
+            println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
+        }
     }
     Ok(())
 }

@@ -15,10 +15,20 @@ struct Opts {
     input_file: String,
     #[clap(short, long, default_value = "ankimd_output.csv")]
     output_file: String,
-    #[clap(short, long)]
+    #[clap(short, long, about = "Prints new cards")]
     silent: bool,
-    #[clap(short, long)]
-    uses_date_folder: bool,
+    #[clap(
+        short,
+        long,
+        about = "Stores CSV outputfiles to path: ./2020-06-04_11/basic.csv"
+    )]
+    use_date_folder: bool,
+    #[clap(
+        short,
+        long,
+        about = "Disables attaching ankimd-tag to every new card."
+    )]
+    disable_ankimd_tag: bool,
 }
 
 pub fn main() -> Result<(), Error> {
@@ -27,7 +37,8 @@ pub fn main() -> Result<(), Error> {
         &opts.input_file,
         &opts.output_file,
         !opts.silent,
-        opts.uses_date_folder,
+        opts.use_date_folder,
+        !opts.disable_ankimd_tag,
     )?;
 
     Ok(())
