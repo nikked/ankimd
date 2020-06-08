@@ -7,7 +7,7 @@ extern crate anki_csv;
 #[clap(
     version = "0.1.0",
     author = "Niko Linnansalo <niko@linnansalo.com>",
-    about = "\n## [ankimd] The opinionated Anki-card maker\
+    about = "\n## [ankimd] Make Anki cards like a boss.\
     \nWrite cards in markdown. Import cards to Anki as csv."
 )]
 struct Opts {
@@ -29,6 +29,8 @@ struct Opts {
         about = "Disables attaching ankimd-tag to every new card."
     )]
     disable_ankimd_tag: bool,
+    #[clap(short, long, about = "Renders blocks are in light-mode")]
+    light_mode: bool,
 }
 
 pub fn main() -> Result<(), Error> {
@@ -39,6 +41,7 @@ pub fn main() -> Result<(), Error> {
         !opts.silent,
         opts.use_date_folder,
         !opts.disable_ankimd_tag,
+        opts.light_mode,
     )?;
 
     Ok(())

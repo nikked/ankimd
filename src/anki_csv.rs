@@ -13,10 +13,12 @@ pub fn make(
     verbose: bool,
     uses_date_folder: bool,
     add_ankimd_tag: bool,
+    light_mode: bool,
 ) -> Result<(), AnkiCsvError> {
     let raw_markdown: String = io::read_markdown(input_file, verbose)?;
     io::validate_raw_markdown(&raw_markdown)?;
-    let anki_cards: Vec<AnkiCard> = make_anki_cards(&raw_markdown, verbose, add_ankimd_tag)?;
+    let anki_cards: Vec<AnkiCard> =
+        make_anki_cards(&raw_markdown, verbose, add_ankimd_tag, light_mode)?;
     io::make_output_csv(
         &anki_cards,
         output_file.to_string(),
@@ -32,6 +34,7 @@ fn make_anki_cards(
     raw_markdown: &str,
     verbose: bool,
     add_ankimd_tag: bool,
+    light_mode: bool,
 ) -> Result<Vec<AnkiCard>, AnkiCsvError> {
     let mut anki_cards: Vec<AnkiCard> = Vec::new();
 
@@ -44,8 +47,8 @@ fn make_anki_cards(
         if line.starts_with("## ") {
             if !temp_front.is_empty() {
                 let new_anki_card: AnkiCard = AnkiCard {
-                    front: formatters::format_front(&temp_front),
-                    back: formatters::format_back(&temp_back),
+                    front: formatters::format_front(&temp_front, light_mode),
+                    back: formatters::format_back(&temp_back, light_mode),
                     card_type: tags::determine_card_type(&temp_front),
                     tags: tags::find_tags(&temp_front, false, add_ankimd_tag),
                 };
@@ -72,8 +75,8 @@ fn make_anki_cards(
     // Add last card after exited loop
     if !temp_back.is_empty() {
         let last_anki_card = AnkiCard {
-            front: formatters::format_front(&temp_front),
-            back: formatters::format_back(&temp_back),
+            front: formatters::format_front(&temp_front, light_mode),
+            back: formatters::format_back(&temp_back, light_mode),
             card_type: tags::determine_card_type(&temp_front),
             tags: tags::find_tags(&temp_front, false, add_ankimd_tag),
         };
