@@ -104,6 +104,9 @@ Last line of card back
 
 ## TODO
 
+* print un-html formatted cards
+
+
 
 ### Database
 * Diesel
@@ -134,6 +137,8 @@ https://medium.com/paloit/speed-up-your-javascript-with-rust-7661922562fa
 ### CLI
 * Enabling adding tag vector as CLI arg (default: [anki-rust])
 * flag for emptying file after making cards
+* light mode.
+* add explanations to params
 
 ### Hygiene
 * Investigate why 'let matched_string' is allowed twice

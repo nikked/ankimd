@@ -13,7 +13,7 @@ pub fn read_markdown(file: &str, verbose: bool) -> Result<String, AnkiCsvError> 
 
     if verbose {
         println!(
-            "\n## [ankimd] The opinionated Anki-card maker\n\nExtracting cards from file: {}\n",
+            "\n## [ankimd] The opinionated Anki-card maker\n\nExtracting cards from file: {}\n_______\n",
             file
         );
     }
@@ -79,7 +79,7 @@ pub fn make_output_csv(
     let mut all_tags = Vec::new();
 
     for card in anki_cards {
-        if verbose {
+        if false {
             println!("---\n\nFront:\n{:?}\n", card.front);
             println!("Back:\n{:?}\n", card.back);
             println!("Tags: {:?}", card.tags);
