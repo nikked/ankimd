@@ -126,12 +126,13 @@ fn make_html_codeblock_str_with_syntect(
         None => syntax_set.find_syntax_by_token("markdown").unwrap(),
     };
 
-    let str_as_html = highlighted_html_for_string(
-        codeblock_str,
-        &syntax_set,
-        syntax,
-        &theme_set.themes["base16-eighties.dark"],
-    );
+    let mut theme = &theme_set.themes["base16-eighties.dark"];
+
+    if light_mode {
+        theme = &theme_set.themes["InspiredGitHub"];
+    }
+
+    let str_as_html = highlighted_html_for_string(codeblock_str, &syntax_set, syntax, theme);
 
     let align_to_left = str::replace(&str_as_html, "<pre", "<pre align=left ");
     align_to_left

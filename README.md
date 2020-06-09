@@ -104,6 +104,7 @@ Last line of card back
 
 ## TODO
 
+
 ### Database
 * Diesel
 * PostgreSQL
@@ -127,7 +128,6 @@ Last line of card back
 ### CLI
 * Enabling adding tag vector as CLI arg (default: [anki-rust])
 * flag for emptying file after making cards
-* light mode.
 
 ### Hygiene
 * Investigate why 'let matched_string' is allowed twice

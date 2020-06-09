@@ -81,13 +81,6 @@ pub fn make_output_csv(
     let mut all_tags = Vec::new();
 
     for card in anki_cards {
-        if false {
-            println!("---\n\nFront:\n{:?}\n", card.front);
-            println!("Back:\n{:?}\n", card.back);
-            println!("Tags: {:?}", card.tags);
-            println!("Type: {:?}\n\n", card.card_type);
-        }
-
         all_tags.extend(card.tags.iter().cloned());
         wtr.write_record(&[
             &card.front,

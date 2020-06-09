@@ -15,7 +15,7 @@ struct Opts {
     input_file: String,
     #[clap(short, long, default_value = "ankimd_output.csv")]
     output_file: String,
-    #[clap(short, long, about = "Prints new cards")]
+    #[clap(short, long, about = "Disables printing new cards")]
     silent: bool,
     #[clap(
         short,
@@ -23,13 +23,9 @@ struct Opts {
         about = "Stores CSV outputfiles to path: ./2020-06-04_11/basic.csv"
     )]
     use_date_folder: bool,
-    #[clap(
-        short,
-        long,
-        about = "Disables attaching ankimd-tag to every new card."
-    )]
+    #[clap(short, long, about = "Disables adding ankimd-tag to new cards")]
     disable_ankimd_tag: bool,
-    #[clap(short, long, about = "Renders blocks are in light-mode")]
+    #[clap(short, long, about = "Renders code blocks in light mode")]
     light_mode: bool,
 }
 

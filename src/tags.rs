@@ -76,7 +76,7 @@ mod test_find_tags {
         let tags = find_tags(
             &"## [sample_tag1,sample_tag2] Front with tag vector[tag tag2]".to_string(),
             true,
-            false,
+            true,
         );
 
         assert!(tags.contains(&"ankimd".to_string()));

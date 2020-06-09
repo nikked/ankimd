@@ -103,7 +103,7 @@ fn make_anki_cards(
 }
 
 fn log_new_card(anki_card: &AnkiCard, front: &str, back: &str) {
-    println!("Front:\n{}", front);
+    println!("\nFront:\n{}", front);
     println!("\n\nBack:\n{}", back);
     println!("\nTags: {:?}", anki_card.tags);
     println!("Card type: {:?}", anki_card.card_type);
@@ -119,6 +119,9 @@ mod anki_csv {
     fn test_make_anki_cards() -> Result<(), Error> {
         let new_cards = make_anki_cards(
             &"## [sample_tag1, sample_tag2] What is the meaning of life? \n 42".to_string(),
+            false,
+            true,
+            false,
         )?;
 
         assert_eq!(new_cards.len(), 1);
