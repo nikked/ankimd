@@ -1,3 +1,6 @@
+use syntect::highlighting::ThemeSet;
+use syntect::parsing::SyntaxSet;
+
 mod error;
 mod formatters;
 mod io;
@@ -41,14 +44,24 @@ fn make_anki_cards(
     let mut temp_front: String = "".to_string();
     let mut temp_back: String = "".to_string();
 
+    // load themes and syntax needed for code highlighting
+    let syntax_set = SyntaxSet::load_defaults_newlines();
+    let theme_set = ThemeSet::load_defaults();
+    // https://docs.rs/syntect/4.2.0/syntect/highlighting/struct.ThemeSet.html
+
     for line in raw_markdown.split("\n") {
         // Card front is one line and starts
         // with ##. E.g. ## [Rust, udemy]
         if line.starts_with("## ") {
             if !temp_front.is_empty() {
                 let new_anki_card: AnkiCard = AnkiCard {
-                    front: formatters::format_front(&temp_front, light_mode),
-                    back: formatters::format_back(&temp_back, light_mode),
+                    front: formatters::format_front(
+                        &temp_front,
+                        light_mode,
+                        &syntax_set,
+                        &theme_set,
+                    )?,
+                    back: formatters::format_back(&temp_back, light_mode, &syntax_set, &theme_set)?,
                     card_type: tags::determine_card_type(&temp_front),
                     tags: tags::find_tags(&temp_front, false, add_ankimd_tag),
                 };
@@ -75,8 +88,8 @@ fn make_anki_cards(
     // Add last card after exited loop
     if !temp_back.is_empty() {
         let last_anki_card = AnkiCard {
-            front: formatters::format_front(&temp_front, light_mode),
-            back: formatters::format_back(&temp_back, light_mode),
+            front: formatters::format_front(&temp_front, light_mode, &syntax_set, &theme_set)?,
+            back: formatters::format_back(&temp_back, light_mode, &syntax_set, &theme_set)?,
             card_type: tags::determine_card_type(&temp_front),
             tags: tags::find_tags(&temp_front, false, add_ankimd_tag),
         };

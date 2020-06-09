@@ -124,12 +124,6 @@ Last line of card back
 * Add card type support
 * Remove BAS, REV, CLO from tag literal in card front
 
-### Add syntax highlighting
-* Do native rust. https://github.com/cobalt-org/cobalt.rs/blob/master/src/syntax_highlight/syntect.rs
-* Or call python 2 formatter.
-* https://github.com/markdown-it/markdown-it#syntax-highlighting
-https://medium.com/paloit/speed-up-your-javascript-with-rust-7661922562fa
-
 ### CLI
 * Enabling adding tag vector as CLI arg (default: [anki-rust])
 * flag for emptying file after making cards
