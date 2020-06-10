@@ -13,7 +13,7 @@ pub fn read_markdown(file: &str, verbose: bool) -> Result<String, AnkiCsvError> 
 
     if verbose {
         println!(
-            "\n## [ankimd] Make Anki cards like a boss.\n\nExtracting cards from file: {}\n_______\n",
+            "\n## [ankimd] Create Anki cards like a boss\n\nExtracting cards from file: {}\n_______\n",
             file
         );
     }

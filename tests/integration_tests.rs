@@ -9,6 +9,7 @@ fn test_anki_csv_does_not_crash() -> Result<(), Error> {
     let uses_date_folder = false;
     let add_ankimd_tag = true;
     let light_mode = true;
+    let clear_ankimd_file = false;
 
     anki_csv::make(
         input_file,
@@ -17,6 +18,7 @@ fn test_anki_csv_does_not_crash() -> Result<(), Error> {
         uses_date_folder,
         add_ankimd_tag,
         light_mode,
+        clear_ankimd_file,
     )?;
     Ok(())
 }

@@ -7,8 +7,19 @@ extern crate anki_csv;
 #[clap(
     version = "0.1.0",
     author = "Niko Linnansalo <niko@linnansalo.com>",
-    about = "\n## [ankimd] Make Anki cards like a boss.\
-    \nWrite cards in markdown. Import cards to Anki as csv."
+    about = "\n## [ankimd] Create Anki cards like a boss\n\
+    Hack your brain with spaced repetition\n\n\
+    ankimd creates awesome Anki cards by parsing a markdown file.\n\
+    It is a companion to Anki and replaces its card creation tool.\n\n\
+    With ankimd, you write your cards with markdown and they are\n\
+    imported in bulk to Anki with a CSV file.\n\n\
+    ankimd is full of features:\n\
+    * Full markdown support\n\
+    * Beautiful syntax highlighted codeblocks\n\
+    * Tag support: Categorize your cards and separate ankimd cards\n\
+    * Logging of history\n\n\
+    Please refer to examples at project home page:\n\
+    https://github.com/nikked/ankimd"
 )]
 struct Opts {
     #[clap(short, long, default_value = "anki.md")]

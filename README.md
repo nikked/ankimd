@@ -1,40 +1,10 @@
-# ankimd: The opinionated Anki-card maker
+# ## [ankimd] Create Anki cards like a boss 
 
 > Write Anki cards in Markdown and import to Anki as csv file
 
 Everyday I write notes to a file called anki.md and convert this markdown to Anki cards. This is achieving by first converting the anki.md to html and then making a Anki importable csv.
 
 This app is highly coupled to my personal workflow. I have done over 2000 Anki cards with the apps previous reincarnation (written in Python). It saves me a lot of time when I can just use my customized markdown and not use Anki's own sluggish editor. 
-
-## Installation
-`brew install ankimd`
-`sudo apt install ankimd`
-
-
-## Usage
-```
-mkdir ankimd
-cd ankimd
-ankimd
-```
-You should get three files:
-1. `anki.md`: this is were you will do your work a
-2. `ankimd_output.csv`: a Anki importable csv-file
-3. `ankimd_history.md`: a history of written markdown
-
-Lets import the file to Anki
-
-## Markdown syntax
-ankimd uses a subset of markdown:
-
-* `## start of front`
-* `---` front separator
-* `*` bullet-points 
-* `1.` enumeration
-* and codeblocks
-
-Please refer to default anki.md
-
 
 
 ## Examples
@@ -101,6 +71,39 @@ impl<'a> Person<'a> {
 \```
 Last line of card back
 ```
+
+## Installation
+`brew install ankimd`
+`sudo apt install ankimd`
+
+
+## Usage
+```
+mkdir ankimd
+cd ankimd
+ankimd
+```
+You should get three files:
+1. `anki.md`: this is were you will do your work a
+2. `ankimd_output.csv`: a Anki importable csv-file
+3. `ankimd_history.md`: a history of written markdown
+
+Lets import the file to Anki
+
+## Markdown syntax
+ankimd uses a subset of markdown:
+
+* `## start of front`
+* `---` front separator
+* `*` bullet-points 
+* `1.` enumeration
+* and codeblocks
+
+Please refer to default anki.md
+
+
+
+
 
 ## TODO
 
