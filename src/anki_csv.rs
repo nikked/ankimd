@@ -15,10 +15,13 @@ pub fn make(
     output_file: &str,
     verbose: bool,
     uses_date_folder: bool,
+    add_ankimd_tag: bool,
+    light_mode: bool,
 ) -> Result<(), AnkiCsvError> {
     let raw_markdown: String = io::read_markdown(input_file, verbose)?;
     io::validate_raw_markdown(&raw_markdown)?;
-    let anki_cards: Vec<AnkiCard> = make_anki_cards(&raw_markdown)?;
+    let anki_cards: Vec<AnkiCard> =
+        make_anki_cards(&raw_markdown, verbose, add_ankimd_tag, light_mode)?;
     io::make_output_csv(
         &anki_cards,
         output_file.to_string(),
@@ -30,7 +33,12 @@ pub fn make(
     Ok(())
 }
 
-fn make_anki_cards(raw_markdown: &str) -> Result<Vec<AnkiCard>, AnkiCsvError> {
+fn make_anki_cards(
+    raw_markdown: &str,
+    verbose: bool,
+    add_ankimd_tag: bool,
+    light_mode: bool,
+) -> Result<Vec<AnkiCard>, AnkiCsvError> {
     let mut anki_cards: Vec<AnkiCard> = Vec::new();
 
     let mut temp_front: String = "".to_string();
@@ -46,12 +54,22 @@ fn make_anki_cards(raw_markdown: &str) -> Result<Vec<AnkiCard>, AnkiCsvError> {
         // with ##. E.g. ## [Rust, udemy]
         if line.starts_with("## ") {
             if !temp_front.is_empty() {
-                anki_cards.push(AnkiCard {
-                    front: formatters::format_front(&temp_front, &syntax_set, &theme_set)?,
-                    back: formatters::format_back(&temp_back, &syntax_set, &theme_set)?,
+                let new_anki_card: AnkiCard = AnkiCard {
+                    front: formatters::format_front(
+                        &temp_front,
+                        light_mode,
+                        &syntax_set,
+                        &theme_set,
+                    )?,
+                    back: formatters::format_back(&temp_back, light_mode, &syntax_set, &theme_set)?,
                     card_type: tags::determine_card_type(&temp_front),
-                    tags: tags::find_tags(&temp_front, false),
-                });
+                    tags: tags::find_tags(&temp_front, false, add_ankimd_tag),
+                };
+
+                if verbose {
+                    log_new_card(&new_anki_card, &temp_front, &temp_back);
+                }
+                anki_cards.push(new_anki_card);
             }
 
             temp_front = line.to_string();
@@ -69,15 +87,27 @@ fn make_anki_cards(raw_markdown: &str) -> Result<Vec<AnkiCard>, AnkiCsvError> {
 
     // Add last card after exited loop
     if !temp_back.is_empty() {
-        anki_cards.push(AnkiCard {
-            front: formatters::format_front(&temp_front, &syntax_set, &theme_set)?,
-            back: formatters::format_back(&temp_back, &syntax_set, &theme_set)?,
+        let last_anki_card = AnkiCard {
+            front: formatters::format_front(&temp_front, light_mode, &syntax_set, &theme_set)?,
+            back: formatters::format_back(&temp_back, light_mode, &syntax_set, &theme_set)?,
             card_type: tags::determine_card_type(&temp_front),
-            tags: tags::find_tags(&temp_front, false),
-        })
+            tags: tags::find_tags(&temp_front, false, add_ankimd_tag),
+        };
+        if verbose {
+            log_new_card(&last_anki_card, &temp_front, &temp_back);
+        }
+        anki_cards.push(last_anki_card);
     }
 
     Ok(anki_cards)
+}
+
+fn log_new_card(anki_card: &AnkiCard, front: &str, back: &str) {
+    println!("\nFront:\n{}", front);
+    println!("\n\nBack:\n{}", back);
+    println!("\nTags: {:?}", anki_card.tags);
+    println!("Card type: {:?}", anki_card.card_type);
+    println!("_______");
 }
 
 #[cfg(test)]
@@ -89,6 +119,9 @@ mod anki_csv {
     fn test_make_anki_cards() -> Result<(), Error> {
         let new_cards = make_anki_cards(
             &"## [sample_tag1, sample_tag2] What is the meaning of life? \n 42".to_string(),
+            false,
+            true,
+            false,
         )?;
 
         assert_eq!(new_cards.len(), 1);

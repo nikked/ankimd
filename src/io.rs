@@ -13,7 +13,7 @@ pub fn read_markdown(file: &str, verbose: bool) -> Result<String, AnkiCsvError> 
 
     if verbose {
         println!(
-            "\n## [ankimd] The opinionated Anki-card maker\n\nExtracting cards from file: {}\n",
+            "\n## [ankimd] Make Anki cards like a boss.\n\nExtracting cards from file: {}\n_______\n",
             file
         );
     }
@@ -81,13 +81,6 @@ pub fn make_output_csv(
     let mut all_tags = Vec::new();
 
     for card in anki_cards {
-        if verbose {
-            println!("---\n\nFront:\n{:?}\n", card.front);
-            println!("Back:\n{:?}\n", card.back);
-            println!("Tags: {:?}", card.tags);
-            println!("Type: {:?}\n\n", card.card_type);
-        }
-
         all_tags.extend(card.tags.iter().cloned());
         wtr.write_record(&[
             &card.front,
@@ -110,7 +103,11 @@ pub fn make_output_csv(
         let set: HashSet<_> = all_tags.drain(..).collect();
         all_tags.extend(set.into_iter());
 
-        println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
+        if all_tags.len() == 1 {
+            println!("Found {} tag in cards: {:?}", all_tags.len(), all_tags);
+        } else {
+            println!("Found {} tags in cards: {:?}", all_tags.len(), all_tags);
+        }
     }
     Ok(())
 }

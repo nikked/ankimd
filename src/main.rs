@@ -7,7 +7,7 @@ extern crate anki_csv;
 #[clap(
     version = "0.1.0",
     author = "Niko Linnansalo <niko@linnansalo.com>",
-    about = "\n## [ankimd] The opinionated Anki-card maker\
+    about = "\n## [ankimd] Make Anki cards like a boss.\
     \nWrite cards in markdown. Import cards to Anki as csv."
 )]
 struct Opts {
@@ -15,10 +15,18 @@ struct Opts {
     input_file: String,
     #[clap(short, long, default_value = "ankimd_output.csv")]
     output_file: String,
-    #[clap(short, long)]
+    #[clap(short, long, about = "Disables printing new cards")]
     silent: bool,
-    #[clap(short, long)]
-    uses_date_folder: bool,
+    #[clap(
+        short,
+        long,
+        about = "Stores CSV outputfiles to path: ./2020-06-04_11/basic.csv"
+    )]
+    use_date_folder: bool,
+    #[clap(short, long, about = "Disables adding ankimd-tag to new cards")]
+    disable_ankimd_tag: bool,
+    #[clap(short, long, about = "Renders code blocks in light mode")]
+    light_mode: bool,
 }
 
 pub fn main() -> Result<(), Error> {
@@ -27,7 +35,9 @@ pub fn main() -> Result<(), Error> {
         &opts.input_file,
         &opts.output_file,
         !opts.silent,
-        opts.uses_date_folder,
+        opts.use_date_folder,
+        !opts.disable_ankimd_tag,
+        opts.light_mode,
     )?;
 
     Ok(())
