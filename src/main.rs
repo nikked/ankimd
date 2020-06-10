@@ -27,6 +27,12 @@ struct Opts {
     disable_ankimd_tag: bool,
     #[clap(short, long, about = "Renders code blocks in light mode")]
     light_mode: bool,
+    #[clap(
+        short,
+        long,
+        about = "Clears your input file. Content is moved to anki_history.md"
+    )]
+    clear_ankimd_file: bool,
 }
 
 pub fn main() -> Result<(), Error> {
@@ -38,6 +44,7 @@ pub fn main() -> Result<(), Error> {
         opts.use_date_folder,
         !opts.disable_ankimd_tag,
         opts.light_mode,
+        opts.clear_ankimd_file,
     )?;
 
     Ok(())

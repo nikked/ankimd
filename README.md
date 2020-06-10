@@ -118,16 +118,12 @@ Last line of card back
 * Clojurescript
 * Reagent
 
-### Error handling
-* get rid of all unwrap and expect; handle errors gracefully
-
 ### Card types
 * Add card type support
 * Remove BAS, REV, CLO from tag literal in card front
 
 ### CLI
 * Enabling adding tag vector as CLI arg (default: [anki-rust])
-* flag for emptying file after making cards
 
 ### Hygiene
 * Investigate why 'let matched_string' is allowed twice

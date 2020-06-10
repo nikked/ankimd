@@ -121,6 +121,12 @@ pub fn write_history(raw_markdown: String) -> Result<(), AnkiCsvError> {
     Ok(writeln!(file, "{}", &raw_markdown)?)
 }
 
+pub fn clear_ankimd_file(input_file: &str) -> Result<(), AnkiCsvError> {
+    fs::remove_file(input_file)?;
+    fs::File::create(input_file)?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod test_validate_input {
     use super::*;
