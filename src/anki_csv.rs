@@ -17,6 +17,7 @@ pub fn make(
     uses_date_folder: bool,
     add_ankimd_tag: bool,
     light_mode: bool,
+    clear_ankimd_file: bool,
 ) -> Result<(), AnkiCsvError> {
     let raw_markdown: String = io::read_markdown(input_file, verbose)?;
     io::validate_raw_markdown(&raw_markdown)?;
@@ -29,6 +30,10 @@ pub fn make(
         uses_date_folder,
     )?;
     io::write_history(raw_markdown)?;
+
+    if clear_ankimd_file {
+        io::clear_ankimd_file(input_file)?;
+    }
 
     Ok(())
 }

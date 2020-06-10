@@ -13,7 +13,7 @@ pub fn read_markdown(file: &str, verbose: bool) -> Result<String, AnkiCsvError> 
 
     if verbose {
         println!(
-            "\n## [ankimd] Make Anki cards like a boss.\n\nExtracting cards from file: {}\n_______\n",
+            "\n## [ankimd] Create Anki cards like a boss\n\nExtracting cards from file: {}\n_______\n",
             file
         );
     }
@@ -119,6 +119,12 @@ pub fn write_history(raw_markdown: String) -> Result<(), AnkiCsvError> {
         .append(true)
         .open("ankimd_history.md")?;
     Ok(writeln!(file, "{}", &raw_markdown)?)
+}
+
+pub fn clear_ankimd_file(input_file: &str) -> Result<(), AnkiCsvError> {
+    fs::remove_file(input_file)?;
+    fs::File::create(input_file)?;
+    Ok(())
 }
 
 #[cfg(test)]
